@@ -31,6 +31,7 @@ def run_dataset(
     provider: Union[Provider, str, None] = "mock",
     backends: Optional[list[str]] = None,
     limit: Optional[int] = None,
+    max_probes: Optional[int] = None,
 ) -> list[dict]:
     provider = provider if isinstance(provider, Provider) else get_provider(provider or "mock")
     episodes = load_dataset(name, path, limit)
@@ -42,7 +43,8 @@ def run_dataset(
             for ep in episodes:
                 system = build_backend(bname, provider)
                 system.ingest(ep.turns)
-                for pr in ep.probes:
+                probes = ep.probes[:max_probes] if max_probes else ep.probes
+                for pr in probes:
                     pred = system.answer_nl(pr.query, ep.ask_turn)
                     total += 1
                     correct += int(score(pr.gold, pred))

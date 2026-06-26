@@ -122,7 +122,7 @@ def cmd_dataset(args) -> int:
               "mock provider. Use --provider mlx for meaningful results.",
               file=sys.stderr)
     rows = run_dataset(args.name, path=args.path, provider=args.provider,
-                       backends=backends, limit=args.limit)
+                       backends=backends, limit=args.limit, max_probes=args.max_probes)
     print(f"\n{args.name}  provider={args.provider}\n")
     _print_table(rows, ["backend", "dataset", "episodes", "probes", "answer_accuracy"])
     return 0
@@ -165,6 +165,8 @@ def build_parser() -> argparse.ArgumentParser:
     ds.add_argument("--backends", default="bitemporal,append-only",
                     help="comma list of backends to compare")
     ds.add_argument("--limit", type=int, default=None, help="cap number of items")
+    ds.add_argument("--max-probes", type=int, default=None, dest="max_probes",
+                    help="cap probes answered per item (bounds runtime)")
     ds.set_defaults(func=cmd_dataset)
     return p
 

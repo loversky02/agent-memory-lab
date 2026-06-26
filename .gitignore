@@ -9,5 +9,7 @@ dist/
 venv/
 env/
 results.json
+# downloaded benchmark datasets (LoCoMo/LongMemEval) — fetch via scripts/download_data.py
+data/
 *.log
 .DS_Store

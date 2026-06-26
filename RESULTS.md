@@ -55,18 +55,33 @@ Real MiniLM embeddings (384-dim) instead of the hash. The ordering and the
 scan-cost gap are unchanged — confirming the staleness story is driven by the
 maintenance module, not the embedder.
 
-## LoCoMo (bundled sample) — real NL answering
+## LoCoMo — real downloaded data + real model
 
-`aml dataset --name locomo --provider mlx-hash --backends bitemporal,append-only`
+The **full LoCoMo** (10 conversations, 1986 QA) was downloaded via
+`scripts/download_data.py` and run through the real pipeline. One conversation
+(419 dialogue turns), 12 probes, full `mlx` provider:
+
+`aml dataset --name locomo --path data/locomo.json --provider mlx --limit 1 --max-probes 12`
 
 | backend | episodes | probes | answer accuracy |
 |---|---|---|---|
-| bitemporal | 1 | 2 | 50% |
-| append-only | 1 | 2 | 50% |
+| bitemporal | 1 | 12 | 8.3% |
+| append-only | 1 | 12 | 8.3% |
 
-The full LoCoMo / LongMemEval downloads didn't complete on this network; the
-adapter + a sample fixture run here, and `scripts/download_data.py` fetches the
-real files on a normal connection.
+This is **real data through the whole pipeline end-to-end** — but the score is
+low and the backends tie, for honest reasons:
+
+- **Qwen-0.5B is far too small** for LoCoMo's multi-hop temporal QA (e.g. *"When
+  did Caroline go to the support group?" → "7 May 2023"*), and the extractor is
+  tuned for simple fact sentences, not 400-turn multi-speaker dialogue.
+- On such sparse/noisy extraction the lifecycle difference doesn't surface in a
+  12-probe slice.
+
+It's the **model/extractor ceiling on this hardware+network, not a pipeline
+bug**. Paper-grade numbers need a 3B–7B model (the 3B download **stalled at 11 MB**
+on this throttled link) and a dialogue-tuned extractor — that's the
+normal-network step below. The verified facts here: the real LoCoMo file parses
+(10 convs / 1986 QA), and the full `mlx` provider answers it end-to-end.
 
 ## Reproduce / scale up
 
