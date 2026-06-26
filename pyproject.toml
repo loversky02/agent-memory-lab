@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-memory-lab"
+version = "0.1.0"
+description = "A runnable lab measuring invalidation/staleness in agent memory (paper: Are We Ready For An Agent-Native Memory System?, arXiv:2606.24775)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["agent-memory", "llm", "rag", "bi-temporal", "invalidation", "mlx"]
+dependencies = []   # core lab is dependency-free and runs offline
+
+[project.optional-dependencies]
+mlx = ["mlx-lm>=0.19", "mlx-embeddings>=0.0.3"]   # Apple Silicon, real models
+kuzu = ["kuzu>=0.4"]                               # embedded property-graph backend
+dashboard = ["streamlit>=1.33", "pandas>=2.0"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+aml = "agent_memory_lab.cli:main"
+
+[tool.setuptools]
+packages = [
+    "agent_memory_lab",
+    "agent_memory_lab.core",
+    "agent_memory_lab.providers",
+    "agent_memory_lab.modules",
+    "agent_memory_lab.stalebench",
+    "agent_memory_lab.datasets",
+]
+
+[tool.setuptools.package-data]
+"agent_memory_lab.datasets" = ["fixtures/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

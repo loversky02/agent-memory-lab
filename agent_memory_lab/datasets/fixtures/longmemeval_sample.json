@@ -1,0 +1,22 @@
+[
+  {
+    "question_id": "longmemeval-sample-1",
+    "question_type": "knowledge-update",
+    "question": "Which city does the user currently live in?",
+    "answer": "Berlin",
+    "question_date": "2024-05-01",
+    "haystack_session_ids": ["s1", "s2"],
+    "haystack_dates": ["2024-01-01", "2024-04-01"],
+    "haystack_sessions": [
+      [
+        {"role": "user", "content": "I live in Hanoi and I love the street food here."},
+        {"role": "assistant", "content": "Hanoi is a wonderful city for food!"}
+      ],
+      [
+        {"role": "user", "content": "I just moved to Berlin for a new job last month."},
+        {"role": "assistant", "content": "Congrats on the move to Berlin!"}
+      ]
+    ],
+    "answer_session_ids": ["s2"]
+  }
+]

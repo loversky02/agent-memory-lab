@@ -1,0 +1,23 @@
+[
+  {
+    "sample_id": "locomo-sample-1",
+    "conversation": {
+      "speaker_a": "Alice",
+      "speaker_b": "Bob",
+      "session_1_date_time": "2024-01-05 10:00",
+      "session_1": [
+        {"speaker": "Alice", "dia_id": "D1:1", "text": "I just set up Vim as my main editor."},
+        {"speaker": "Bob", "dia_id": "D1:2", "text": "Nice, I'm a VS Code person myself."}
+      ],
+      "session_2_date_time": "2024-03-10 18:30",
+      "session_2": [
+        {"speaker": "Alice", "dia_id": "D2:1", "text": "Update: I switched my main editor to VS Code last week."},
+        {"speaker": "Bob", "dia_id": "D2:2", "text": "Welcome to the club!"}
+      ]
+    },
+    "qa": [
+      {"question": "What editor does Alice use now?", "answer": "VS Code", "evidence": ["D2:1"], "category": 5},
+      {"question": "What editor did Alice originally use?", "answer": "Vim", "evidence": ["D1:1"], "category": 2}
+    ]
+  }
+]
