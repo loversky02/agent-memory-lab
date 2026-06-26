@@ -146,13 +146,18 @@ aml dataset --name locomo --path /path/to/locomo.json --provider mlx
 
 ```bash
 pip install -e ".[mlx]"
-aml bench --provider mlx
+aml bench --provider mlx           # real LLM + real embeddings
+aml bench --provider mlx-hash      # real LLM + hash embeddings (no embed-model download)
 # override models: AML_MLX_LLM / AML_MLX_EMBED env vars
 ```
 
 The provider only changes embedding/extraction *quality* — memory semantics
 (and therefore the staleness story) are provider-independent. `mock` exists so
 tests and CI stay deterministic and offline.
+
+**[RESULTS.md](RESULTS.md)** has an actual local-model run (Qwen2.5-0.5B on MLX):
+the append-only-vs-bitemporal ordering and the scan-cost gap both survive a real
+model — and the noisier numbers show extraction quality bounding everything.
 
 ## Dashboard
 

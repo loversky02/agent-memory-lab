@@ -135,7 +135,7 @@ def build_parser() -> argparse.ArgumentParser:
     b = sub.add_parser("bench", help="run StaleBench across backends")
     b.add_argument("--backends", default="default",
                    help="'default', 'all', or comma list. choices: " + ",".join(ALL_BACKENDS))
-    b.add_argument("--provider", default="mock", choices=["mock", "mlx"])
+    b.add_argument("--provider", default="mock", choices=["mock", "mlx", "mlx-hash"])
     b.add_argument("--episodes", type=int, default=20)
     b.add_argument("--seed", type=int, default=0)
     b.add_argument("--scenario", default="all", choices=["basic", "retract", "all"])
@@ -146,7 +146,7 @@ def build_parser() -> argparse.ArgumentParser:
     b.set_defaults(func=cmd_bench)
 
     d = sub.add_parser("demo", help="show one episode + per-backend answers")
-    d.add_argument("--provider", default="mock", choices=["mock", "mlx"])
+    d.add_argument("--provider", default="mock", choices=["mock", "mlx", "mlx-hash"])
     d.add_argument("--seed", type=int, default=None,
                    help="omit for the curated controlled episode")
     d.add_argument("--scenario", default="all", choices=["basic", "retract", "all"])
@@ -161,7 +161,7 @@ def build_parser() -> argparse.ArgumentParser:
     ds.add_argument("--name", required=True, choices=["locomo", "longmemeval"])
     ds.add_argument("--path", default=None,
                     help="path to a full dataset JSON (defaults to bundled sample)")
-    ds.add_argument("--provider", default="mock", choices=["mock", "mlx"])
+    ds.add_argument("--provider", default="mock", choices=["mock", "mlx", "mlx-hash"])
     ds.add_argument("--backends", default="bitemporal,append-only",
                     help="comma list of backends to compare")
     ds.add_argument("--limit", type=int, default=None, help="cap number of items")

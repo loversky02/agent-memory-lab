@@ -54,4 +54,10 @@ def get_provider(name: str = "mock") -> Provider:
     if name == "mlx":
         from .mlx_provider import MLXEmbedder, MLXLLM
         return Provider("mlx", MLXEmbedder(), MLXLLM())
-    raise ValueError(f"unknown provider {name!r} (use 'mock' or 'mlx')")
+    if name == "mlx-hash":
+        # real MLX LLM (extraction + answering) + deterministic hash embeddings,
+        # so retrieval needs no embedding-model download.
+        from .mock import MockEmbedder
+        from .mlx_provider import MLXLLM
+        return Provider("mlx-hash", MockEmbedder(), MLXLLM())
+    raise ValueError(f"unknown provider {name!r} (use 'mock', 'mlx', or 'mlx-hash')")

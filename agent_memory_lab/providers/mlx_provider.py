@@ -58,7 +58,10 @@ class MLXLLM(LLM):
 
     def complete(self, prompt: str) -> str:  # pragma: no cover - env dependent
         from mlx_lm import generate  # type: ignore
-        return generate(
-            self._model, self._tokenizer, prompt=prompt, max_tokens=256,
-            verbose=False,
-        )
+        tok = self._tokenizer
+        if getattr(tok, "chat_template", None):   # instruct models need the template
+            prompt = tok.apply_chat_template(
+                [{"role": "user", "content": prompt}],
+                add_generation_prompt=True, tokenize=False)
+        return generate(self._model, tok, prompt=prompt, max_tokens=96,
+                        verbose=False).strip()

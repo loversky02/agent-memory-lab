@@ -24,7 +24,7 @@ DEFAULT_CAPACITY = 6
 
 
 def _extractor(provider: Provider):
-    if provider.name == "mlx":
+    if provider.name.startswith("mlx"):
         return LLMExtractor(provider.llm)
     return TemplateExtractor()
 

@@ -104,10 +104,18 @@ class LLMExtractor(Extractor):
     """Prompt a real model to emit triples (used with the mlx provider)."""
 
     _PROMPT = (
-        "Extract durable facts about the user as JSON. Return a JSON array; each "
-        "item is {{\"predicate\": str, \"object\": str|null, \"retraction\": bool}}. "
-        "Use retraction=true (object=null) when the user says they stopped/no "
-        "longer do something. If no durable fact, return [].\n\nText: {text}\nJSON:"
+        "Extract durable facts about the user as a JSON array. Each item is "
+        "{{\"predicate\": str, \"object\": str|null, \"retraction\": bool}}. "
+        "Set retraction=true and object=null when the user stops / no longer does "
+        "something. If there is no durable fact, return [].\n"
+        "Examples:\n"
+        "Text: I switched my main editor to Vim.\n"
+        "JSON: [{{\"predicate\": \"editor\", \"object\": \"Vim\", \"retraction\": false}}]\n"
+        "Text: The weather is nice today.\n"
+        "JSON: []\n"
+        "Text: I stopped using Rust.\n"
+        "JSON: [{{\"predicate\": \"language\", \"object\": null, \"retraction\": true}}]\n\n"
+        "Text: {text}\nJSON:"
     )
 
     def __init__(self, llm) -> None:
@@ -115,8 +123,9 @@ class LLMExtractor(Extractor):
 
     def extract(self, text: str, subject: str = "user") -> list[Triple]:  # pragma: no cover - env dependent
         raw = self.llm.complete(self._PROMPT.format(text=text))
-        try:
-            start, end = raw.index("["), raw.rindex("]") + 1
+        try:                                  # take only the FIRST JSON array
+            start = raw.index("[")
+            end = raw.index("]", start) + 1
             data = json.loads(raw[start:end])
         except (ValueError, json.JSONDecodeError):
             return []
