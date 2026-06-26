@@ -1,5 +1,10 @@
 # Agent Memory Lab
 
+[![CI](https://github.com/loversky02/agent-memory-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/loversky02/agent-memory-lab/actions/workflows/ci.yml)
+&nbsp;![python](https://img.shields.io/badge/python-3.10%2B-blue)
+&nbsp;![tests](https://img.shields.io/badge/tests-28%20passing-2a9d8f)
+&nbsp;![offline](https://img.shields.io/badge/default-offline%20%26%20deterministic-555)
+
 A small, **runnable** lab built from the paper
 [*Are We Ready For An Agent-Native Memory System?*](https://arxiv.org/abs/2606.24775)
 (Zhou et al., arXiv:2606.24775). The paper reframes agent memory as a **data
@@ -11,11 +16,21 @@ This repo makes that measurable. It treats memory as four swappable modules,
 ships several real backends across three storage engines (+ ablations), and
 scores them on metrics that look *below* the final answer.
 
-```
-extractor   turn text  -> triples
-storage     hold items, answer temporal/triple queries
-maintainer  integrate new triples  (append / overwrite / revise+forget)   <- lifecycle
-retriever   query + now -> ranked items
+<p align="center">
+  <img src="assets/staleness_benchmark.png" width="680" alt="StaleBench results: append-only is 55% stale at 45% update-EM; the bi-temporal graph is 0% stale, 100% EM, 100% history recall"><br>
+  <em>Same conversation, four memory designs. Update-EM looks comparable — staleness and history recall do not.</em>
+</p>
+
+The four modules, and where the lifecycle decision lives:
+
+```mermaid
+flowchart LR
+    T["conversation turn"] --> X["① extractor<br/>text → triples"]
+    X --> Mn["③ maintainer · the lifecycle step<br/>append · overwrite · revise + forget"]
+    Mn --> St[("② storage<br/>bi-temporal triples<br/>in-memory · SQLite · Kùzu")]
+    Qr["question + now"] --> Rt["④ retriever<br/>valid-at-now top-k"]
+    St --> Rt
+    Rt --> A["answer"]
 ```
 
 Runs **offline and deterministic** by default (`mock` provider, zero
@@ -86,6 +101,11 @@ Read it like the paper:
 - **bitemporal-bounded** turns on `forgetting` (bounded audit trail): correctness
   holds, history recall drops — the cost of forgetting, made explicit.
 
+<p align="center">
+  <img src="assets/cost_vs_correctness.png" width="680" alt="Cost vs staleness: bitemporal sits at near-zero scan cost and zero staleness while storing the most items"><br>
+  <em>Ideal corner is bottom-left. Bitemporal lands there <strong>and</strong> keeps the most in memory — cheap reads, full history. Regenerate with <code>make figures</code>.</em>
+</p>
+
 ## Storage engines — same semantics, real databases
 
 The bi-temporal contract is storage-agnostic. `bitemporal` (in-memory),
@@ -154,7 +174,9 @@ agent_memory_lab/
   cli.py        aml bench | demo | gen | dataset
 dashboard/      streamlit cost-vs-correctness view
 examples/       quickstart.py
+assets/         make_figures.py + the generated README charts
 tests/          28 behavioral + unit tests (kuzu tests auto-skip if absent)
+.github/        CI — pytest on Python 3.11–3.13
 ```
 
 ## Honesty notes

@@ -1,4 +1,4 @@
-.PHONY: install install-all test bench demo dataset dash clean
+.PHONY: install install-all test bench demo dataset dash figures clean
 
 install:
 	pip install -e ".[dev]"
@@ -20,6 +20,9 @@ dataset:
 
 dash:
 	streamlit run dashboard/app.py
+
+figures:
+	python assets/make_figures.py
 
 clean:
 	rm -f results.json

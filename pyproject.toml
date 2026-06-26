@@ -16,6 +16,7 @@ dependencies = []   # core lab is dependency-free and runs offline
 mlx = ["mlx-lm>=0.19", "mlx-embeddings>=0.0.3"]   # Apple Silicon, real models
 kuzu = ["kuzu>=0.4"]                               # embedded property-graph backend
 dashboard = ["streamlit>=1.33", "pandas>=2.0"]
+figures = ["matplotlib>=3.7"]                      # regenerate README charts
 dev = ["pytest>=7.0"]
 
 [project.scripts]
