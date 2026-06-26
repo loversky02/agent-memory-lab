@@ -9,7 +9,7 @@ Silicon (Metal) doing the extraction and NL answering.
 |---|---|
 | Machine | Apple Silicon (M-series), Metal |
 | LLM | `mlx-community/Qwen2.5-0.5B-Instruct-4bit` (the model cached locally) |
-| Embedder | deterministic hash (`mlx-hash` provider) — no embedding-model download needed |
+| Embedder | `mlx-hash`: deterministic hash (no download) · full `mlx`: `all-MiniLM-L6-v2-4bit` (384-dim, verified) |
 | Mode | `HF_HUB_OFFLINE=1` (weights served from local cache) |
 | Date | 2026-06-26 |
 
@@ -40,6 +40,20 @@ What survives the move to a real model:
   a filler line. That is itself the paper's point — **maintenance cannot fix bad
   extraction**; the four modules are coupled. A stronger extractor restores the
   clean separation the mock run shows.
+
+### Full `mlx` provider (real LLM + real embeddings) — verified
+
+`aml bench --provider mlx --backends append-only,key-overwrite,bitemporal --episodes 3`
+
+| backend | staleness | update-EM | history | scanned |
+|---|---|---|---|---|
+| append-only | 46.7% | 20.0% | 0% | 22.7 |
+| key-overwrite | 40.0% | 33.3% | 0% | 4.3 |
+| bitemporal | 40.0% | 33.3% | 62.5% | 4.3 |
+
+Real MiniLM embeddings (384-dim) instead of the hash. The ordering and the
+scan-cost gap are unchanged — confirming the staleness story is driven by the
+maintenance module, not the embedder.
 
 ## LoCoMo (bundled sample) — real NL answering
 

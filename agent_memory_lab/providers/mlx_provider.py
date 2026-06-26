@@ -35,13 +35,17 @@ class MLXEmbedder(Embedder):
         self._model, self._tokenizer = load(model_id)
 
     def _embed(self, text: str) -> list[float]:  # pragma: no cover - env dependent
-        out = self._model.encode([text], tokenizer=self._tokenizer)
-        # mlx-embeddings returns pooled embeddings; coerce to a plain list.
-        vec = out.text_embeds[0] if hasattr(out, "text_embeds") else out[0]
-        try:
-            vec = vec.tolist()
-        except AttributeError:
-            vec = list(vec)
+        from mlx_embeddings import generate  # type: ignore
+        out = generate(self._model, self._tokenizer, texts=[text])
+        # `generate` returns an mx.array (or an object exposing the embeddings).
+        # Handle pooled (batch, dim) and token-level (batch, seq, dim) shapes.
+        arr = getattr(out, "text_embeds", None)
+        if arr is None:
+            arr = getattr(out, "pooler_output", out)
+        if getattr(arr, "ndim", 1) == 3:           # mean-pool token embeddings
+            arr = arr.mean(axis=1)
+        vec = arr[0] if getattr(arr, "ndim", 1) >= 2 else arr
+        vec = vec.tolist() if hasattr(vec, "tolist") else list(vec)
         return _l2([float(x) for x in vec])
 
 

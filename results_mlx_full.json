@@ -1,0 +1,47 @@
+[
+  {
+    "backend": "append-only",
+    "n_current": 15,
+    "n_history": 8,
+    "staleness_rate": 0.4667,
+    "update_em": 0.2,
+    "history_recall": 0.0,
+    "invalidation_latency": null,
+    "avg_store_size": 30.0,
+    "avg_scanned": 22.67,
+    "writes": 30.0,
+    "removes": 0.0,
+    "closes": 0.0,
+    "forgets": 0.0
+  },
+  {
+    "backend": "key-overwrite",
+    "n_current": 15,
+    "n_history": 8,
+    "staleness_rate": 0.4,
+    "update_em": 0.3333,
+    "history_recall": 0.0,
+    "invalidation_latency": null,
+    "avg_store_size": 4.33,
+    "avg_scanned": 4.33,
+    "writes": 22.67,
+    "removes": 18.33,
+    "closes": 0.0,
+    "forgets": 0.0
+  },
+  {
+    "backend": "bitemporal",
+    "n_current": 15,
+    "n_history": 8,
+    "staleness_rate": 0.4,
+    "update_em": 0.3333,
+    "history_recall": 0.625,
+    "invalidation_latency": 0,
+    "avg_store_size": 24.33,
+    "avg_scanned": 4.33,
+    "writes": 24.33,
+    "removes": 0.0,
+    "closes": 12.67,
+    "forgets": 0.0
+  }
+]
